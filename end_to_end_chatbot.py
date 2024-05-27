@@ -6,6 +6,17 @@ import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
+import json
+
+# Load intents from the JSON file
+def load_intents(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    return data['intents']
+
+# Define the path to your JSON file
+intents_file_path = './intents.json' 
+
 # Handling SSL certificate verification for NLTK download
 try:
     _create_unverified_https_context = ssl._create_unverified_context
@@ -19,23 +30,8 @@ else:
 nltk.data.path.append(os.path.abspath('nltk_data'))
 nltk.download('punkt')
 
-# Define the contents of the chatbot
-bot_contents = [
-    {"tag": "greeting", "patterns": ["Hi", "Hello", "Hey", "How are you", "What's up"],
-     "responses": ["Hi there", "Hello", "Hey", "I'm fine, thank you", "Nothing much"]},
-    {"tag": "goodbye", "patterns": ["Bye", "See you later", "Goodbye", "Take care"],
-     "responses": ["Goodbye", "See you later", "Take care"]},
-    {"tag": "thanks", "patterns": ["Thank you", "Thanks", "Thanks a lot", "I appreciate it"],
-     "responses": ["You're welcome", "No problem", "Glad I could help"]},
-    {"tag": "about", "patterns": ["What can you do", "Who are you", "What are you", "What is your purpose"],
-     "responses": ["I am a chatbot", "My purpose is to assist you", "I can answer questions and provide assistance"]},
-    {"tag": "help", "patterns": ["Help", "I need help", "Can you help me", "What should I do"],
-     "responses": ["Sure, what do you need help with?", "I'm here to help. What's the problem?", "How can I assist you?"]},
-    {"tag": "age", "patterns": ["How old are you", "What's your age"],
-     "responses": ["I don't have an age. I'm a chatbot.", "I was just born in the digital world.", "Age is just a number for me."]},
-    {"tag": "weather", "patterns": ["What's the weather like", "How's the weather today"],
-     "responses": ["I'm sorry, I cannot provide real-time weather information.", "You can check the weather on a weather app or website."]}
-]
+# Load the intents from the JSON file
+bot_contents = load_intents(intents_file_path)
 
 # Create the vectorizer and classifier
 vectorizer = TfidfVectorizer()
